@@ -1,7 +1,7 @@
 class Token {
   tag = "";
   constructor(t) {
-    tag = t;
+    this.tag = t;
   }
 }
 class Tag {
@@ -29,7 +29,7 @@ class Word extends Token {
 
 class Lexer {
   line = 1;
-  peek = "";
+  peek = " ";
   words = new Map();
   initStr = "";
   reserve(t) {
@@ -41,8 +41,9 @@ class Lexer {
     this.initStr = str;
   }
   scan() {
-    const formatStr = this.initStr.split();
-    for (; (this.peek = formatStr.shift()); ) {
+    const formatStr = this.initStr.split("");
+    console.log(formatStr);
+    for (; ; this.peek = formatStr.shift()) {
       if (this.peek === " " || this.peek === "\t") {
         continue;
       } else if (this.peek === "\n") {
@@ -53,7 +54,7 @@ class Lexer {
       let v = 0;
       do {
         v = 10 * v + Number(this.peek);
-        this.peek = this.initStr.shift();
+        this.peek = formatStr.shift();
       } while (/^[0-9]$/.test(this.peek));
       return new Num(v);
     }
@@ -61,10 +62,10 @@ class Lexer {
       let lexeme = "";
       do {
         lexeme += this.peek;
-        this.peek = this.initStr.shift();
+        this.peek = formatStr.shift();
       } while (/^[a-zA-Z]$/.test(this.peek));
       const word = this.words.get(lexeme);
-      if (word !== null) {
+      if (word) {
         return word;
       }
       const resWord = new Word(Tag.ID, lexeme);
@@ -76,3 +77,5 @@ class Lexer {
     return t;
   }
 }
+const lexer = new Lexer(`a + b - c`);
+console.log(lexer.scan());
